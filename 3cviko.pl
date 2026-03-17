@@ -70,7 +70,14 @@ ka(S,[H|T]):-
     write('->'),
     write(S1), % vypise stav S1
     ka(S1,T).
+/*
+To znamená:
 
+aktuálny stav bol 1
+
+zostávajúce slovo bolo abba
+
+po prečítaní prvého znaku sa prešlo do stavu 2*/
 
 %append([a,b,c],[d,e],X).
 
