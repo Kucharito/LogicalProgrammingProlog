@@ -313,21 +313,3 @@ board1([X|SX],Y):-
     write(H), 
     write(' | '),
     board1(SX,Y).
-
-%Tah hraca
-th(S):- p(S,' '),
-    retract(p(S,' ')),
-    assert(p(S,'o')),
-    vypis_pole,
-    nl,
-    write(S).
-
-tp:- p(S,' '),
-    retract(p(S,' ')),
-    assert(p(S,'x')),
-    vypis_pole,
-    nl,
-    write(S).
-
-% kazdy nas tah bude vypsany pod tabulkou kde isiel a dalej pre moje dobro, si tam dame informaciu podla akeho pravidla taha, 
-% ale musi sa vypisat suradnice na ktorej tahal pocita, hrac hraje koleckom, pocitac bude hrat krizikom
