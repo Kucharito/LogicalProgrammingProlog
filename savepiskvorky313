@@ -1,0 +1,294 @@
+
+p([0,0],' ').
+p([0,1],' ').
+p([0,2],' ').
+p([0,3],' ').
+p([0,4],' ').
+p([0,5],' ').
+p([0,6],' ').
+p([0,7],' ').
+p([0,8],' ').
+p([0,9],' ').
+
+p([1,0],' ').
+p([1,1],' ').
+p([1,2],' ').
+p([1,3],' ').
+p([1,4],' ').
+p([1,5],' ').
+p([1,6],' ').
+p([1,7],' ').
+p([1,8],' ').
+p([1,9],' ').
+
+p([2,0],' ').
+p([2,1],' ').
+p([2,2],' ').
+p([2,3],' ').
+p([2,4],' ').
+p([2,5],' ').
+p([2,6],' ').
+p([2,7],' ').
+p([2,8],' ').
+p([2,9],' ').
+
+p([3,0],' ').
+p([3,1],' ').
+p([3,2],' ').
+p([3,3],' ').
+p([3,4],' ').
+p([3,5],' ').
+p([3,6],' ').
+p([3,7],' ').
+p([3,8],' ').
+p([3,9],' ').
+
+p([4,0],' ').
+p([4,1],' ').
+p([4,2],' ').
+p([4,3],' ').
+p([4,4],' ').
+p([4,5],' ').
+p([4,6],' ').
+p([4,7],' ').
+p([4,8],' ').
+p([4,9],' ').
+
+p([5,0],' ').
+p([5,1],' ').
+p([5,2],' ').
+p([5,3],' ').
+p([5,4],' ').
+p([5,5],' ').
+p([5,6],' ').
+p([5,7],' ').
+p([5,8],' ').
+p([5,9],' ').
+
+p([6,0],' ').
+p([6,1],' ').
+p([6,2],' ').
+p([6,3],' ').
+p([6,4],' ').
+p([6,5],' ').
+p([6,6],' ').
+p([6,7],' ').
+p([6,8],' ').
+p([6,9],' ').
+
+p([7,0],' ').
+p([7,1],' ').
+p([7,2],' ').
+p([7,3],' ').
+p([7,4],' ').
+p([7,5],' ').
+p([7,6],' ').
+p([7,7],' ').
+p([7,8],' ').
+p([7,9],' ').
+
+p([8,0],' ').
+p([8,1],' ').
+p([8,2],' ').
+p([8,3],' ').
+p([8,4],' ').
+p([8,5],' ').
+p([8,6],' ').
+p([8,7],' ').
+p([8,8],' ').
+p([8,9],' ').
+
+p([9,0],' ').
+p([9,1],' ').
+p([9,2],' ').
+p([9,3],' ').
+p([9,4],' ').
+p([9,5],' ').
+p([9,6],' ').
+p([9,7],' ').
+p([9,8],' ').
+p([9,9],' ').
+
+
+% :- dynamic p /2
+% reset:- pole([0,1,2,3,4,5,6,7,8,9], [0,1,2,3,4,5,6,7,8,9]),
+
+% reset je vytvorenie prazdnej hracej plochy
+ % deklarace predikátu p/3 jako dynamického, aby bylo možné přidávat a odebírat fakta během běhu programu
+
+ % Odstraní všechna fakta p/2 a p/3, aby se zajistilo čisté prostředí pro reset
+reset:-
+    retractall(p(_, _)),          % vymaze vsetky existujuce policka z databazy
+    pole([0,1,2,3,4,5,6,7,8,9],   % vytvori vsetky X suradnice 0..9
+         [0,1,2,3,4,5,6,7,8,9]),  % a pre kazde X vsetky Y suradnice 0..9
+    vypis_pole.                   % vypise cele pole
+                                  % poznamka: neskor sa da upravit tak,
+                                  % aby suradnice zacinali od stredu,
+                                  % nie od [0,0] v lavom hornom rohu
+
+pole([],_).                       % ak uz nezostali ziadne X suradnice, koniec
+
+pole([X|SX], SY):- 
+    pole1(X, SY),                 % pre aktualne X vytvori vsetky body [X,Y]
+    pole(SX, SY).                 % potom pokracuje so zvyskom X suradnic
+
+pole1(_,[]).                      % ak uz nezostali ziadne Y suradnice, koniec
+
+pole1(X,[Y|SY]):- 
+    assert(p([X,Y],' ')),         % ulozi do databazy jedno prazdne policko
+                                  % na pozicii [X,Y]
+    pole1(X,SY).                  % pokracuje dalsim Y pre rovnake X
+
+
+vypis_pole:- 
+    findall(X, p([X,_],_), XL),         % zozbiera vsetky X suradnice z faktov p([X,Y], Hodnota)
+    sort(XL, XLS),                      % zoradi X suradnice a zaroven odstrani duplicity
+
+    findall(Y, p([_,Y],_), YL),         % zozbiera vsetky Y suradnice
+    sort(YL, YLS),                      % zoradi Y suradnice a odstrani duplicity
+    reverse(YLS, YLS1),                 % otoci poradie Y, aby sa vypisovalo zhora nadol
+
+    write('   --- --- --- --- --- --- --- --- --- ---'), % horna ciara tabulky
+    nl,                                 % novy riadok
+
+    board(XLS, YLS1),                   % vypise samotne riadky pola podla X a Y suradnic
+
+    write('    0   1   2   3   4   5   6   7   8   9').  % spodny riadok s oznacenim stlpcov
+
+board(_,[]).                          % ak uz nie su dalsie riadky Y, vypis sa skonci
+
+board(SX,[Y|SY]):-
+    write(Y),                         % vypise cislo aktualneho riadku
+    write(' | '),                     % vypise oddelovac za cislom riadku
+    board1(SX,Y),                     % vypise obsah vsetkych policok v riadku Y
+    nl,                               % novy riadok
+    write('   --- --- --- --- --- --- --- --- --- ---'), % vodorovna ciara pod riadkom
+    nl,
+    board(SX,SY).                     % pokracuje na dalsi riadok
+
+board1([],_).                         % ak uz nie su dalsie stlpce X, skonci vypis riadku
+
+board1([X|SX],Y):- 
+    p([X,Y],H),                       % zisti obsah policka na suradnici [X,Y]
+    write(H),                         % vypise obsah policka
+    write(' | '),                     % vypise oddelovac medzi stlpcami
+    board1(SX,Y).                     % pokracuje na dalsi stlpec v tom istom riadku
+
+% Tah hraca
+th(S):- 
+    p(S,' '),                         % overi, ze zadane policko je prazdne
+    retract(p(S,' ')),                % odstrani fakt, ze policko je prazdne
+    assert(p(S,'o')),                 % zapise na dane policko znak o
+    vypis_pole,                       % vypise aktualny stav pola
+    nl,
+    write(S).                         % vypise suradnicu vykonaneho tahu
+
+x([]):- vypis_pole.
+x([H|T]):- 
+    retract(p(H,' ')), 
+    assert(p(H,'x')), 
+    x(T).
+
+
+tp:- p(S1,' '),
+    o(_,S1,S2,S3,S4,S5),
+    p(S2,x),
+    p(S3,' '),
+    p(S4,x),
+    p(S5,' '),
+    p(S6,' '),
+    S1\=S6,
+    o(_,S6,S7,S3,S8,S9),
+    p(S7,x),
+    p(S8,x),
+    p(S9,' '),
+    retract(p(S3,' ')),
+    assert(p(S3,'x')),
+    write([S3,'krizek']),nl,
+    vyhra(x,_),
+    vypis_pole.
+
+tp:- p(S1,x),
+    o(_,S1,S2,S3,S4,S5),
+    p(S2,x),
+    p(S3,x),
+    p(S4,x),
+    p(S5,' '),
+    retract(p(S5,' ')),
+    assert(p(S5,'x')),
+    write([S5,'petica xxxxX']),nl,
+    vyhra(x,_),
+    vypis_pole.
+
+tp:- p(S1,x),
+    o(_,S1,S2,S3,S4,S5),
+    p(S2,x),
+    p(S3,x),
+    p(S4,' '),
+    p(S5,'x'),
+    retract(p(S4,' ')),
+    assert(p(S4,'x')),
+    write([S4,'petica xxxXx']),nl,
+    vyhra(x,_),
+    vypis_pole.
+
+tp:- p(S1,x),
+    o(_,S1,S2,S3,S4,S5),
+    p(S2,x),
+    p(S3,' '),
+    p(S4,x),
+    p(S5,'x'),
+    retract(p(S3,' ')),
+    assert(p(S3,'x')),
+    write([S3,'petica xxXxx']),nl,
+    vyhra(x,_),
+    vypis_pole.
+
+tp:- p(S1,x),
+    o(_,S1,S2,S3,S4,S5),
+    p(S2,' '),
+    p(S3,x),
+    p(S4,x),
+    p(S5,x),
+    retract(p(S2,' ')),
+    assert(p(S2,'x')),
+    write([S2,'petica xXxxx']),nl,
+    vyhra(x,_),
+    vypis_pole.
+
+tp:- p(S1,' '),
+    o(_,S1,S2,S3,S4,S5),
+    p(S2,x),
+    p(S3,x),
+    p(S4,x),
+    p(S5,x),
+    retract(p(S1,' ')),
+    assert(p(S1,'x')),
+    write([S1,'petica Xxxxx']),nl,
+    vyhra(x,_),
+    vypis_pole.
+
+tp:- 
+    p(S,' '),                         % najde nejake prazdne policko
+    retract(p(S,' ')),                % odstrani fakt, ze je prazdne
+    assert(p(S,'x')),                 % zapise na toto policko znak x
+    vypis_pole,                       % vypise aktualny stav pola
+    nl,
+    write(S).                         % vypise suradnicu vykonaneho tahu
+% kazdy nas tah bude vypsany pod tabulkou kde isiel a dalej pre moje dobro, si tam dame informaciu podla akeho pravidla taha, 
+% ale musi sa vypisat suradnice na ktorej tahal pocita, hrac hraje koleckom, pocitac bude hrat krizikom
+
+vyhra(H,R):- 
+    p(S1,H),
+    o(ID,S1,S2,S3,S4,S5), 
+    p(S2,H),
+    p(S3,H),
+    p(S4,H),
+    p(S5,H),
+    R=[S1,S2,S3,S4,S5], 
+    write(['vyhra:',H,R]), nl.
+
+o(1,[X,Y],[X1,Y],[X2,Y],[X3,Y],[X4,Y]):- X1 is X+1, X2 is X+2, X3 is X+3, X4 is X+4. % ->
+o(2,[X,Y],[X1,Y1],[X2,Y2],[X3,Y3],[X4,Y4]):- X1 is X+1, Y1 is Y+1, X2 is X+2, Y2 is Y+2, X3 is X+3, Y3 is Y+3, X4 is X+4, Y4 is Y+4. % 5 na diagonále HORE
+o(3,[X,Y],[X,Y1],[X,Y2],[X,Y3],[X,Y4]):- Y1 is Y+1, Y2 is Y+2, Y3 is Y+3, Y4 is Y+4, Y5 is Y+5. % | STLPEC SMER HORE
+o(4,[X,Y],[X1,Y1],[X2,Y2],[X3,Y3],[X4,Y4]):- X1 is X+1, Y1 is Y-1, X2 is X+2, Y2 is Y-2, X3 is X+3, Y3 is Y-3, X4 is X+4, Y4 is Y-4. % 5 na diagonále dole
