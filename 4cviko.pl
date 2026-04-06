@@ -369,7 +369,22 @@ tp:-
     !.
 
 tp:-
+    pravidlo_rozsir_na_stvorku_x(S, Pravidlo),
+    urob_tah_x(S, Pravidlo),
+    !.
+
+tp:-
+    pravidlo_blokuj_rozsirenie_o(S, Pravidlo),
+    urob_tah_x(S, Pravidlo),
+    !.
+
+tp:-
     pravidlo_stred(S, Pravidlo),
+    urob_tah_x(S, Pravidlo),
+    !.
+
+tp:-
+    pravidlo_hraj_pri_x(S, Pravidlo),
     urob_tah_x(S, Pravidlo),
     !.
 
@@ -414,6 +429,21 @@ pravidlo_stred(S, 'R5 stred-von'):-
     kandidat_stred(S),
     p(S,' ').
 
+% pravidlo 6: rozsir svoju trojicu na stvorku (bez okamzitej vyhry)
+pravidlo_rozsir_na_stvorku_x(S, 'R6 rozsirenie na 4'):-
+    p(A,_),
+    o(_,A,B,C,D,E),
+    dopln_na_stvorku('x', [A,B,C,D,E], S),
+    nie_je_tah_z_otvorenej_trojice('x', S).
+
+% pravidlo 7: zablokuj supera, ked si vie rozsirit trojicu na stvorku
+pravidlo_blokuj_rozsirenie_o(S, 'R7 blok rozsirenia supera na 4'):-
+    p(A,_),
+    o(_,A,B,C,D,E),
+    dopln_na_stvorku('o', [A,B,C,D,E], S),
+    nie_je_tah_z_otvorenej_trojice('o', S).
+
+
 jedna_prazdna_styri(H, [A,B,C,D,E], A):- p(A,' '), p(B,H), p(C,H), p(D,H), p(E,H).
 jedna_prazdna_styri(H, [A,B,C,D,E], B):- p(A,H), p(B,' '), p(C,H), p(D,H), p(E,H).
 jedna_prazdna_styri(H, [A,B,C,D,E], C):- p(A,H), p(B,H), p(C,' '), p(D,H), p(E,H).
@@ -423,6 +453,30 @@ jedna_prazdna_styri(H, [A,B,C,D,E], E):- p(A,H), p(B,H), p(C,H), p(D,H), p(E,' '
 % vrati koncove volne pole pre vzor _HHH_
 otvorena_trojica(H, [A,B,C,D,E], A):- p(A,' '), p(B,H), p(C,H), p(D,H), p(E,' ').
 otvorena_trojica(H, [A,B,C,D,E], E):- p(A,' '), p(B,H), p(C,H), p(D,H), p(E,' ').
+
+nie_je_tah_z_otvorenej_trojice(H, S):-
+    not((
+        p(A,_),
+        o(_,A,B,C,D,E),
+        otvorena_trojica(H, [A,B,C,D,E], S)
+    )).
+
+dopln_na_stvorku(H, [A,B,C,D,_E], S):- jedna_prazdna_zo_styroch(H, [A,B,C,D], S).
+dopln_na_stvorku(H, [_A,B,C,D,E], S):- jedna_prazdna_zo_styroch(H, [B,C,D,E], S).
+
+jedna_prazdna_zo_styroch(H, [A,B,C,D], A):- p(A,' '), p(B,H), p(C,H), p(D,H).
+jedna_prazdna_zo_styroch(H, [A,B,C,D], B):- p(A,H), p(B,' '), p(C,H), p(D,H).
+jedna_prazdna_zo_styroch(H, [A,B,C,D], C):- p(A,H), p(B,H), p(C,' '), p(D,H).
+jedna_prazdna_zo_styroch(H, [A,B,C,D], D):- p(A,H), p(B,H), p(C,H), p(D,' ').
+
+sused([X,Y],[X1,Y1]):- X1 is X+1, Y1 is Y.
+sused([X,Y],[X1,Y1]):- X1 is X-1, Y1 is Y.
+sused([X,Y],[X1,Y1]):- X1 is X, Y1 is Y+1.
+sused([X,Y],[X1,Y1]):- X1 is X, Y1 is Y-1.
+sused([X,Y],[X1,Y1]):- X1 is X+1, Y1 is Y+1.
+sused([X,Y],[X1,Y1]):- X1 is X+1, Y1 is Y-1.
+sused([X,Y],[X1,Y1]):- X1 is X-1, Y1 is Y+1.
+sused([X,Y],[X1,Y1]):- X1 is X-1, Y1 is Y-1.
 
 kandidat_stred([4,4]).
 kandidat_stred([5,5]).
