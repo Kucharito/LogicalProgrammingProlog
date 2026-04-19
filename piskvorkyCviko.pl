@@ -207,44 +207,37 @@ x([H|T]):-
 tp:-
     pravidlo_vyhra_x(S, Pravidlo),
     mapuj(S,x),
-    urob_tah_x(S, Pravidlo),
-    !.
+    urob_tah_x(S, Pravidlo).
 
 tp:-
     pravidlo_blokuj_vyhru_o(S, Pravidlo),
     mapuj(S,x),
-    urob_tah_x(S, Pravidlo),
-    !.
+    urob_tah_x(S, Pravidlo).
 
 tp:-
     pravidlo_vytvor_hrozbu_x(S, Pravidlo),
     mapuj(S,x),
-    urob_tah_x(S, Pravidlo),
-    !.
+    urob_tah_x(S, Pravidlo).
 
 tp:-
     pravidlo_blokuj_hrozbu_o(S, Pravidlo),
     mapuj(S,x),
-    urob_tah_x(S, Pravidlo),
-    !.
+    urob_tah_x(S, Pravidlo).
 
 tp:-
     pravidlo_rozsir_na_stvorku_x(S, Pravidlo),
     mapuj(S,x),
-    urob_tah_x(S, Pravidlo),
-    !.
+    urob_tah_x(S, Pravidlo).
 
 tp:-
     pravidlo_blokuj_rozsirenie_o(S, Pravidlo),
     mapuj(S,x),
-    urob_tah_x(S, Pravidlo),
-    !.
+    urob_tah_x(S, Pravidlo).
 
 tp:-
     pravidlo_stred(S, Pravidlo),
     mapuj(S,x),
-    urob_tah_x(S, Pravidlo),
-    !.
+    urob_tah_x(S, Pravidlo).
 
 tp:-
     map(R),
@@ -252,8 +245,7 @@ tp:-
     member([S,R],G),
     p(S,' '),
     mapuj(S,x),
-    urob_tah_x(S, 'learned tah'),
-    !.
+    urob_tah_x(S, 'learned tah').
 
 
 tp:-
@@ -428,3 +420,31 @@ mapuj(S,H):- map(Mapa),
 
 %tell('C:\\Users\\kuc0396\\Desktop\\cvikoText.txt'), listing(game),told.
 
+% vytvorit si obranne pravidlo pre diagonaly pretoze v diagonale vzdy ked uz je 3 a 3 tak uz to je gg pre mna uz neubranim 
+/*
+   --- --- --- --- --- --- --- --- --- ---
+9 |   |   |   |   |   | x |   |   |   |   |
+   --- --- --- --- --- --- --- --- --- ---
+8 |   |   |   |   | x | o | x | x |   |   |
+   --- --- --- --- --- --- --- --- --- ---
+7 |   |   |   |   | x | o | o | o |   |   |
+   --- --- --- --- --- --- --- --- --- ---
+6 |   |   |   | x | o | o | o | o | x |   |
+   --- --- --- --- --- --- --- --- --- ---
+5 |   |   |   | o | o | x | o | o |   |   |
+   --- --- --- --- --- --- --- --- --- ---
+4 |   |   | o | x | x | x | x | o |   |   |
+   --- --- --- --- --- --- --- --- --- ---
+3 |   | x |   |   |   |   |   | o | x |   |
+   --- --- --- --- --- --- --- --- --- ---
+2 |   |   |   |   |   |   |   | x |   |   |
+   --- --- --- --- --- --- --- --- --- ---
+1 |   |   |   |   |   |   |   |   |   |   |
+   --- --- --- --- --- --- --- --- --- ---
+0 |   |   |   |   |   |   |   |   |   |   |
+   --- --- --- --- --- --- --- --- --- ---
+    0   1   2   3   4   5   6   7   8   9
+[7,7][vyhra:,o,[[7,3],[7,4],[7,5],[7,6],[7,7]]]
+true .*/
+
+%takto som prehral dvakrat
